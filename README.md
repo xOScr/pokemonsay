@@ -20,7 +20,7 @@ If you want to rebuild everything in the repository, you will also need [`img2xt
 Keep in mind that `pokemonsay` will only work if you have `cowsay` installed and available in your `$PATH`. To install `pokemonsay` run these commands in a terminal window:
 
 ```bash
-$ git clone http://github.com/possatti/pokemonsay
+$ git clone https://github.com/xOScr/pokemonsay
 $ cd pokemonsay
 $ ./install.sh
 ```

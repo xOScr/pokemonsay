@@ -28,11 +28,22 @@ usage() {
 
 # Where the pokemon are.
 pokemon_path=`pwd`/cows
+# Where the shiny pokemon are.
+pokemon_path_shiny=`pwd`/cows/shiny
 
 list_pokemon() {
 	echo "Pokémon available in '$pokemon_path/':"
 	echo
-	all_pokemon="$(find $pokemon_path -name "*.cow" | sort)"
+	all_pokemon="$(find $pokemon_path -maxdepth 1 -name "*.cow" | sort)"
+	echo "$all_pokemon" | while read pokemon; do
+		pokemon=${pokemon##*/}
+		pokemon=${pokemon%.cow}
+		echo $pokemon
+	done
+	echo
+	echo "Pokémon available in '$pokemon_path_shiny/':"
+	echo
+	all_pokemon="$(find $pokemon_path_shiny -maxdepth 1 -name "*.cow" | sort)"
 	echo "$all_pokemon" | while read pokemon; do
 		pokemon=${pokemon##*/}
 		pokemon=${pokemon%.cow}
@@ -107,12 +118,23 @@ if [ -n "$WORD_WRAP" ]; then
 fi
 
 # Define which pokemon should be displayed.
-if [ -n "$POKEMON_NAME" ]; then
-	pokemon_cow=$(find $pokemon_path -name "$POKEMON_NAME.cow")
-elif [ -n "$COW_FILE" ]; then
+# Add shiny option (Modify at will)
+SHINY_CHANCE=10
+shiny=$(($RANDOM%$SHINY_CHANCE))
+if [ -n "$COW_FILE" ]; then
 	pokemon_cow="$COW_FILE"
+elif [ $shiny -eq 0 ]; then
+	if [ -n "$POKEMON_NAME" ]; then
+		pokemon_cow=$(find $pokemon_path_shiny -name "$POKEMON_NAME.cow")
+	else
+		pokemon_cow=$(find $pokemon_path_shiny -name "*.cow" | shuf -n1)
+	fi
 else
-	pokemon_cow=$(find $pokemon_path -name "*.cow" | shuf -n1)
+	if [ -n "$POKEMON_NAME" ]; then
+		pokemon_cow=$(find $pokemon_path -mindepth 1 -maxdepth 1 -name "$POKEMON_NAME.cow")
+	else
+		pokemon_cow=$(find $pokemon_path -mindepth 1 -maxdepth 1 -name "*.cow" | shuf -n1)
+	fi
 fi
 
 # Get the pokemon name.
@@ -120,7 +142,8 @@ filename=$(basename "$pokemon_cow")
 pokemon_name="${filename%.*}"
 
 # Call cowsay or cowthink.
-if [ -n "$THINK" ]; then
+think=$(($RANDOM%2))
+if [ $think -eq 1 ]; then
 	cowthink -f "$pokemon_cow" $word_wrap $MESSAGE
 else
 	cowsay -f "$pokemon_cow" $word_wrap $MESSAGE
@@ -128,5 +151,10 @@ fi
 
 # Write the pokemon name, unless requested otherwise.
 if [ -z "$DISPLAY_NAME" ]; then
-	echo $pokemon_name
+	if [ $shiny -eq 0 ]; then
+		echo $pokemon_name '*'
+	else
+		echo $pokemon_name
+	fi
+	echo
 fi
