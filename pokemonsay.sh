@@ -27,9 +27,9 @@ usage() {
 }
 
 # Where the pokemon are.
-pokemon_path=`pwd`/cows
+pokemon_path=$HOME/.pokemonsay/pokemon
 # Where the shiny pokemon are.
-pokemon_path_shiny=`pwd`/cows/shiny
+pokemon_path_shiny=$HOME/.pokemonsay/pokemon/shiny
 
 list_pokemon() {
 	echo "Pokémon available in '$pokemon_path/':"
@@ -119,7 +119,7 @@ fi
 
 # Define which pokemon should be displayed.
 # Add shiny option (Modify at will)
-SHINY_CHANCE=10
+SHINY_CHANCE=4096
 shiny=$(($RANDOM%$SHINY_CHANCE))
 if [ -n "$COW_FILE" ]; then
 	pokemon_cow="$COW_FILE"

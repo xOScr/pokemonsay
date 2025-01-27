@@ -8,11 +8,11 @@ pokemonthink_bin="pokemonthink"
 
 # Make sure the directories exist
 mkdir -p $install_path/
-mkdir -p $install_path/cows/
+mkdir -p $install_path/pokemon/
 mkdir -p $bin_path/
 
 # Copy the cows and the main script to the install path.
-cp ./cows/*.cow $install_path/cows/
+cp -r ./pokemon/* $install_path/pokemon/
 cp ./pokemonsay.sh $install_path/
 cp ./pokemonthink.sh $install_path/
 
